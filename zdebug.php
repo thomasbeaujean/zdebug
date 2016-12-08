@@ -19,6 +19,19 @@ function zdebug($data)
     if ($data === false) {
         $data = '[false]';
     }
+    if ($data instanceof \Doctrine\ORM\QueryBuilder) {
+        $sql = $data->getQuery()->getSQL();
+        $sql = str_replace(',', "\n,", $sql);
+        $sql = str_replace('FROM', "\nFROM", $sql);
+        $sql = str_replace('INNER', "\nINNER", $sql);
+        $sql = str_replace('LEFT', "\nLEFT", $sql);
+        $sql = str_replace('WHERE', "\nWHERE", $sql);
+        $sql = str_replace('AND', "\nAND", $sql);
+        $data = [
+            'sql' => $sql,
+            'parameters' => $data->getQuery()->getParameters(),
+        ];
+    }
 
     $data = print_r($data, true);
 
